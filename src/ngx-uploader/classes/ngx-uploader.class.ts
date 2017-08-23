@@ -124,11 +124,11 @@ export class NgUploaderService {
   }
 
   initInputEvents(input: EventEmitter<UploadInput>): void {
-    console.log('asdf');
+    console.log('start');
     input.subscribe((event: UploadInput) => {
       switch (event.type) {
         case 'uploadFile':
-          console.log('asdf');
+          console.log('uploadFile');
           const uploadFileIndex = this.files.findIndex(file => file === event.file);
           if (uploadFileIndex !== -1 && event.file) {
             
@@ -138,7 +138,7 @@ export class NgUploaderService {
           }
         break;
         case 'uploadAll':
-          console.log('asdf');
+          console.log('uploadAll');
           const concurrency = typeof event.concurrency !== 'undefined' && event.concurrency > 0 ? event.concurrency : Number.POSITIVE_INFINITY;
           const files = this.files.filter(file => file.progress.status === UploadStatus.Queue);
           if (!files.length) {
@@ -153,7 +153,7 @@ export class NgUploaderService {
             });
         break;
         case 'cancel':
-          console.log('asdf');
+          console.log('cancel');
           const id = event.id || null;
           if (!id) {
             return;
@@ -170,7 +170,7 @@ export class NgUploaderService {
           }
         break;
         case 'cancelAll':
-          console.log('asdf');
+          console.log('cancelAll');
           this.files.forEach(file => {
             if (file.sub) {
               file.sub.unsubscribe();
@@ -181,7 +181,7 @@ export class NgUploaderService {
           });
         break;
         case 'remove':
-          console.log('asdf');
+          console.log('remove');
           if (!event.id) {
             return;
           }
@@ -194,7 +194,7 @@ export class NgUploaderService {
           }
         break;
         case 'removeAll':
-          console.log('asdf');
+          console.log('removeAll');
           if (this.files.length) {
             this.files = [];
             this.serviceEvents.emit({ type: 'removedAll' });
@@ -205,7 +205,7 @@ export class NgUploaderService {
   }
 
   uploadFile(file: UploadFile, event: UploadInput): Observable<UploadOutput> {
-    console.log('asdf');
+    console.log('uploadFile_start');
     return new Observable(observer => {
       const url = event.url || '';
       const method = event.method || 'POST';
@@ -249,11 +249,10 @@ export class NgUploaderService {
         observer.complete();
       });
 
-      console.log('asdf');
       xhr.onreadystatechange = () => {
-        console.log('asdf');
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-          console.log('asdf');
+        console.log('if문 전,');
+        if (xhr.readyState === 4) {
+          console.log('if문 다음');
           const speedAverage = Math.round(file.size / (new Date().getTime() - progressStartTime) * 1000);
           file.progress = {
             status: UploadStatus.Done,
